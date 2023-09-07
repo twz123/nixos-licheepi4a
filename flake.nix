@@ -6,18 +6,11 @@
     # so we can use the small channel to get updates more quickly.
     #    checkout more details here: https://hydra.nixos.org/jobset/nixos/release-23.05#tabs-jobs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05-small";
-
-    # according to https://github.com/sipeed/LicheePi4A/blob/pre-view/.gitmodules
-    thead-kernel = {
-      url = "github:revyos/thead-kernel/lpi4a";
-      flake = false;
-    };
   };
 
   outputs = inputs @ {
     self,
     nixpkgs,
-    thead-kernel,
     ...
   }: let
     buildFeatures = {
@@ -57,7 +50,13 @@
     overlays = [
       (self: super: {
         linuxPackages_thead = super.linuxPackagesFor (super.callPackage ./pkgs/kernel {
-          src = thead-kernel;
+          # according to https://github.com/sipeed/LicheePi4A/blob/pre-view/.gitmodules
+          src = super.fetchFromGitHub {
+            owner = "revyos";
+            repo = "thead-kernel";
+            rev = "9c58afc7addc5a4a5deef24dfe6a4a103549d3da";  # branch: lpi4a
+            sha256 = "sha256-9R+XY18uDuMWjVzLkg4lTmxDltsvyI51qvm34SNVI4I=";
+          };
           stdenv = super.gcc13Stdenv;
           kernelPatches = with super.kernelPatches; [
             bridge_stp_helper
