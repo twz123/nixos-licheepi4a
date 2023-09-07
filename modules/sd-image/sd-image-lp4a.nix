@@ -1,5 +1,5 @@
 # Generate sdImage for LicheePi 4A
-{ config, lib, modulesPath, pkgs, pkgsKernel, ... }: 
+{ config, lib, modulesPath, pkgs, ... }: 
 let
   rootPartitionUUID = "14e19a7b-0ae0-484d-9d54-43bd6fdc20c7";
 in {
@@ -49,9 +49,9 @@ in {
     compressImage = false;
     # install firmware into a separate partition: /boot/firmware
     populateFirmwareCommands = ''
-      cp ${pkgsKernel.thead-opensbi}/share/opensbi/lp64/generic/firmware/fw_dynamic.bin firmware/fw_dynamic.bin
-      cp ${pkgsKernel.light_aon_fpga}/lib/firmware/light_aon_fpga.bin firmware/light_aon_fpga.bin
-      cp ${pkgsKernel.light_c906_audio}/lib/firmware/light_c906_audio.bin firmware/light_c906_audio.bin
+      cp ${pkgs.thead-opensbi}/share/opensbi/lp64/generic/firmware/fw_dynamic.bin firmware/fw_dynamic.bin
+      cp ${pkgs.light_aon_fpga}/lib/firmware/light_aon_fpga.bin firmware/light_aon_fpga.bin
+      cp ${pkgs.light_c906_audio}/lib/firmware/light_c906_audio.bin firmware/light_c906_audio.bin
 
       ${config.boot.loader.generic-extlinux-compatible.populateCmd} -c ${config.system.build.toplevel} -d ./firmware
     '';
